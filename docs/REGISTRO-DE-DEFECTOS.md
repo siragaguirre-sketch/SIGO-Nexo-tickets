@@ -1,5 +1,11 @@
 # Registro de defectos y validacion
 
+## Defectos conocidos y corregidos
+
+| ID | Componente | Resultado obtenido | Correccion | Estado |
+|---|---|---|---|---|
+| `BUG-001` | Prueba funcional de `/` | GitHub Actions no encontraba `public/build/manifest.json` al ejecutar PHPUnit | Construir los assets con pnpm/Vite antes de las pruebas PHP | Corregido |
+
 ## Plantilla
 
 Cada defecto encontrado debe registrarse en el Pull Request o en un Issue con esta estructura:
