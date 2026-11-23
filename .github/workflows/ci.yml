@@ -52,6 +52,11 @@ jobs:
           DB_USERNAME: laravel
           DB_PASSWORD: laravel123
         run: php artisan migrate --force
+      - name: Run unit and feature tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php vendor/bin/phpunit
       - name: Run tests
         env:
           DB_CONNECTION: pgsql

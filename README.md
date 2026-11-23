@@ -4,6 +4,12 @@
 
 Landing pública en `/` · Aplicación privada en `/dashboard`.
 
+Repositorio de respaldo y entrega académica:
+
+- **https://github.com/siragaguirre-sketch/SIGO-Nexo-tickets**
+- Repositorio original conservado como remoto `upstream`:
+  **https://github.com/AdrielGarcia2001/auditoria-nexo-tickets**
+
 ---
 
 ## Tabla de contenidos
