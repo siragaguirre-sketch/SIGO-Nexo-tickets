@@ -2,6 +2,7 @@
 
 namespace App\Services\Tickets;
 
+use App\Contracts\Tickets\TicketWorkflowPolicyContract;
 use App\Models\Ticket;
 use App\Models\TicketComentario;
 use App\Models\TicketHistorial;
@@ -18,9 +19,10 @@ use Illuminate\Auth\Access\AuthorizationException;
  */
 class FlujoTicketService
 {
-    public function __construct(private GoogleDriveService $drive)
-    {
-    }
+    public function __construct(
+        private GoogleDriveService $drive,
+        private TicketWorkflowPolicyContract $policy,
+    ) {}
 
     // ======================================================================
     //  SUPERVISOR (o admin): resolver
@@ -28,11 +30,11 @@ class FlujoTicketService
 
     public function resolver(Ticket $ticket, User $user, ?string $comentario = null): Ticket
     {
-        if (! $user->puedeGestionar()) {
-            throw new AuthorizationException('Solo supervisores o administradores pueden resolver tickets.');
-        }
+        if (! $this->policy->puedeResolver($ticket, $user)) {
+            if (! $user->puedeGestionar()) {
+                throw new AuthorizationException('Solo supervisores o administradores pueden resolver tickets.');
+            }
 
-        if (! $ticket->puedeResolverse()) {
             throw new \LogicException('El ticket debe estar en estado Nuevo para poder resolverlo.');
         }
 
@@ -75,11 +77,11 @@ class FlujoTicketService
 
     public function cerrar(Ticket $ticket, User $user, ?string $comentario = null): Ticket
     {
-        if (! $user->isAdmin()) {
-            throw new AuthorizationException('Solo el administrador puede cerrar tickets.');
-        }
+        if (! $this->policy->puedeCerrar($ticket, $user)) {
+            if (! $user->isAdmin()) {
+                throw new AuthorizationException('Solo el administrador puede cerrar tickets.');
+            }
 
-        if (! $ticket->puedeCerrarse()) {
             throw new \LogicException('Solo se puede cerrar un ticket que este Resuelto.');
         }
 
@@ -114,11 +116,11 @@ class FlujoTicketService
 
     public function reabrir(Ticket $ticket, User $user, bool $convertirACorrectivo = false, ?string $motivo = null): Ticket
     {
-        if (! $user->isAdmin()) {
-            throw new AuthorizationException('Solo el administrador puede reabrir tickets.');
-        }
+        if (! $this->policy->puedeReabrir($ticket, $user)) {
+            if (! $user->isAdmin()) {
+                throw new AuthorizationException('Solo el administrador puede reabrir tickets.');
+            }
 
-        if (! $ticket->puedeReabrirse()) {
             throw new \LogicException('Solo se puede reabrir un ticket que este Resuelto.');
         }
 
@@ -170,8 +172,15 @@ class FlujoTicketService
      */
     public function asignar(Ticket $ticket, array $tecnicoIds, User $user): Ticket
     {
-        if (! $user->puedeGestionar()) {
-            throw new AuthorizationException('Solo supervisores o administradores pueden asignar técnicos.');
+        if (! $this->policy->puedeAsignar($ticket, $tecnicoIds, $user)) {
+            if (! $user->puedeGestionar()) {
+                throw new AuthorizationException('Solo supervisores o administradores pueden asignar técnicos.');
+            }
+
+            $limite = $ticket->limiteTecnicos();
+            throw new \LogicException(
+                "Un ticket de {$ticket->area()} admite como máximo {$limite} técnico(s)."
+            );
         }
 
         $tecnicoIds = array_values(array_unique(array_map('intval', $tecnicoIds)));

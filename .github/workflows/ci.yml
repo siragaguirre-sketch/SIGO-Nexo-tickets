@@ -43,6 +43,18 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build frontend assets
+        run: pnpm run build
       - name: Run migrations
         env:
           DB_CONNECTION: pgsql
@@ -52,6 +64,11 @@ jobs:
           DB_USERNAME: laravel
           DB_PASSWORD: laravel123
         run: php artisan migrate --force
+      - name: Run unit and feature tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php vendor/bin/phpunit
       - name: Run tests
         env:
           DB_CONNECTION: pgsql
