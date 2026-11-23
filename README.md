@@ -113,44 +113,6 @@ $env:DB_CONNECTION='pgsql'; $env:DB_HOST='127.0.0.1'; $env:DB_PORT='5432'; $env:
 
 ---
 
-## Variables de entorno
-
-Configurá estas secciones en `.env`:
-
-```dotenv
-APP_NAME=SIGO-NEXO
-APP_URL=http://127.0.0.1:8000
-
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=auditoria_tickets
-DB_USERNAME=laravel
-DB_PASSWORD=laravel123
-
-BROADCAST_CONNECTION=reverb
-QUEUE_CONNECTION=database
-CACHE_STORE=database
-
-REVERB_APP_ID=...
-REVERB_APP_KEY=...
-REVERB_APP_SECRET=...
-REVERB_HOST=127.0.0.1
-REVERB_PORT=8080
-REVERB_SCHEME=http
-
-VITE_REVERB_APP_KEY=${REVERB_APP_KEY}
-VITE_REVERB_HOST=${REVERB_HOST}
-VITE_REVERB_PORT=${REVERB_PORT}
-VITE_REVERB_SCHEME=${REVERB_SCHEME}
-
-# Opcional: Google Drive
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REFRESH_TOKEN=
-GOOGLE_PARENT_FOLDER_ID=
-```
-
 Después de cambiar `.env`:
 
 ```powershell
@@ -184,22 +146,6 @@ Terminal 4 — Vite (solo en desarrollo):
 ```powershell
 pnpm run dev
 ```
-
-### Usuarios de prueba (seeder)
-
-Todos con contraseña `password`:
-
-| Rol | Email |
-|-----|-------|
-| Administrador | `admin@nexo.com` |
-| Supervisor | `supervisor@nexo.com` |
-| Técnico mant. | `abel.garcia@nexo.com` |
-| Técnico mant. | `lucas.barreto@nexo.com` |
-| Técnico limp. | `santiago.garcia@nexo.com` |
-| Técnico limp. | `maria.ruiz@nexo.com` |
-
-> Las cuentas nuevas las crea el administrador con contraseña aleatoria; el usuario debe cambiarla al primer ingreso.
-
 ---
 
 ## Pruebas
